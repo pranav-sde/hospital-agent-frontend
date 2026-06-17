@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '@/lib/api';
 import { 
   Search, 
@@ -15,6 +15,7 @@ import {
 import styles from './appointments.module.css';
 
 export default function AppointmentsPage() {
+  const dateInputRef = useRef(null);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -137,8 +138,9 @@ export default function AppointmentsPage() {
           </div>
 
           <div className={styles.dateWrapper}>
-            <Calendar className={styles.filterIcon} />
+            <Calendar className={styles.filterIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
             <input 
+              ref={dateInputRef}
               type="date" 
               value={dateFilter}
               onChange={(e) => setDateFilter(e.target.value)}

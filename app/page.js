@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { apiRequest } from '@/lib/api';
 import { 
   Users, 
+  Calendar,
   CalendarCheck, 
   CalendarClock, 
   CalendarX, 
@@ -25,6 +26,7 @@ import {
 import styles from './page.module.css';
 
 export default function DashboardHome() {
+  const dateInputRef = useRef(null);
   const [stats, setStats] = useState({
     todayCount: 0,
     upcomingCount: 0,
@@ -34,28 +36,46 @@ export default function DashboardHome() {
   });
   const [todaySchedule, setTodaySchedule] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [scheduleLoading, setScheduleLoading] = useState(false);
+  const [selectedDate, setSelectedDate] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    async function fetchDashboardData() {
+    async function fetchDashboardStats() {
       try {
         const statsData = await apiRequest('/api/appointments/stats');
-        
-        // Get today's date in Asia/Kolkata timezone (YYYY-MM-DD)
-        const tzDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-        const scheduleData = await apiRequest(`/api/appointments?date=${tzDate}`);
-
         setStats(statsData);
-        setTodaySchedule(scheduleData);
       } catch (err) {
-        console.error('Failed to load dashboard data:', err);
+        console.error('Failed to load stats:', err);
       } finally {
         setLoading(false);
       }
     }
 
-    fetchDashboardData();
+    fetchDashboardStats();
+    
+    // Set initial date to today's date in Asia/Kolkata timezone
+    const tzDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    setSelectedDate(tzDate);
   }, []);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+    
+    async function fetchSchedule() {
+      setScheduleLoading(true);
+      try {
+        const scheduleData = await apiRequest(`/api/appointments?date=${selectedDate}`);
+        setTodaySchedule(scheduleData);
+      } catch (err) {
+        console.error('Failed to load schedule:', err);
+      } finally {
+        setScheduleLoading(false);
+      }
+    }
+
+    fetchSchedule();
+  }, [selectedDate]);
 
   const getStatusClass = (status) => {
     switch (status?.toUpperCase()) {
@@ -188,20 +208,53 @@ export default function DashboardHome() {
         {/* Today's Schedule Card */}
         <div className={`${styles.scheduleCard} glass`}>
           <div className={styles.scheduleHeader}>
-            <h3>Today's Schedule</h3>
-            <div className={styles.searchWrapper}>
-              <Search className={styles.searchIcon} />
-              <input 
-                type="text" 
-                placeholder="Search schedule..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            <div className={styles.scheduleTitleGroup}>
+              <h3>
+                {selectedDate === new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) 
+                  ? "Today's Schedule" 
+                  : `Schedule for ${selectedDate}`}
+              </h3>
+              {selectedDate !== new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) && (
+                <button 
+                  onClick={() => setSelectedDate(new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }))}
+                  className={styles.resetTodayBtn}
+                >
+                  Back to Today
+                </button>
+              )}
+            </div>
+            
+            <div className={styles.scheduleControls}>
+              <div className={styles.dateSelectorWrapper}>
+                <Calendar className={styles.calendarIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
+                <input 
+                  ref={dateInputRef}
+                  type="date" 
+                  value={selectedDate} 
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className={styles.dateInput}
+                />
+              </div>
+
+              <div className={styles.searchWrapper}>
+                <Search className={styles.searchIcon} />
+                <input 
+                  type="text" 
+                  placeholder="Search schedule..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
           <div className={styles.scheduleList}>
-            {filteredSchedule.length > 0 ? (
+            {scheduleLoading ? (
+              <div className={styles.noData} style={{ padding: '3rem 1rem' }}>
+                <div className="spinner" style={{ width: 30, height: 30 }} />
+                <p>Loading schedule...</p>
+              </div>
+            ) : filteredSchedule.length > 0 ? (
               filteredSchedule.map((app) => (
                 <div key={app.id} className={styles.scheduleRow}>
                   <div className={styles.patientMain}>
@@ -218,7 +271,14 @@ export default function DashboardHome() {
               ))
             ) : (
               <div className={styles.noData}>
-                <p>{searchQuery ? 'No matching appointments found' : 'No appointments scheduled for today'}</p>
+                <p>
+                  {searchQuery 
+                    ? 'No matching appointments found' 
+                    : selectedDate === new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' })
+                      ? "No appointments scheduled for today"
+                      : `No appointments scheduled for ${selectedDate}`
+                  }
+                </p>
                 {!searchQuery && (
                   <Link href="/book" className={styles.bookPrompt}>
                     <span>Book first patient</span>

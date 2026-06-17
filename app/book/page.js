@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '@/lib/api';
 import { Calendar, User, Phone, Clock, Check, AlertCircle } from 'lucide-react';
 import styles from './book.module.css';
 
 export default function BookAppointmentPage() {
+  const dateInputRef = useRef(null);
   const [patientName, setPatientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [date, setDate] = useState('');
@@ -146,8 +147,9 @@ export default function BookAppointmentPage() {
               <div className={styles.inputGroup}>
                 <label>Appointment Date</label>
                 <div className={styles.inputWrapper}>
-                  <Calendar className={styles.inputIcon} />
+                  <Calendar className={styles.inputIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
                   <input 
+                    ref={dateInputRef}
                     type="date" 
                     value={date} 
                     onChange={(e) => setDate(e.target.value)}

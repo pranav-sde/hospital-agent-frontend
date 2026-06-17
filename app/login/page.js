@@ -31,6 +31,54 @@ export default function LoginPage() {
     }
   };
 
+  const handleOnboard = async (e) => {
+    e.preventDefault();
+    if (!username || !password) {
+      setError('Please enter username and password to onboard.');
+      return;
+    }
+
+    setError('');
+    setSubmitting(true);
+
+    try {
+      const payload = {
+        email: username,
+        password: password,
+        clinicName: 'Diabetes Thyroid Centre',
+        doctorName: 'Dr. Admin',
+        address: '123 Health Street',
+        consultationFee: 500.0,
+        openTime: '09:00',
+        closeTime: '18:00',
+        closedDays: ['SUNDAY']
+      };
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/api/auth/onboard`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        // Automatically login after successful onboarding
+        const result = await login(username, password);
+        if (!result.success) {
+          setError('Onboarded successfully, but auto-login failed: ' + result.error);
+          setSubmitting(false);
+        }
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to complete onboarding setup.');
+      }
+    } catch (err) {
+      setError(err.message);
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <AnimatedOrbs />
@@ -95,6 +143,20 @@ export default function LoginPage() {
                 <div className={styles.spinner} />
               ) : (
                 'Access Dashboard'
+              )}
+            </button>
+
+            <button 
+              type="button" 
+              className="cyber-button" 
+              style={{ width: '100%', marginTop: '0.75rem', height: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+              onClick={handleOnboard}
+              disabled={submitting}
+            >
+              {submitting ? (
+                <div className={styles.spinner} style={{ borderTopColor: 'var(--bg-main)' }} />
+              ) : (
+                'Onboard Clinic (Database Setup)'
               )}
             </button>
           </form>

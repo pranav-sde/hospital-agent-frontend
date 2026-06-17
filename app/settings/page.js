@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [openTime, setOpenTime] = useState('');
   const [closeTime, setCloseTime] = useState('');
   const [closedDays, setClosedDays] = useState([]);
+  const [appointmentDurationMinutes, setAppointmentDurationMinutes] = useState(30);
   
   // Password States
   const [oldPassword, setOldPassword] = useState('');
@@ -56,6 +57,7 @@ export default function SettingsPage() {
           setOpenTime(config.openTime || '');
           setCloseTime(config.closeTime || '');
           setClosedDays(config.closedDays || []);
+          setAppointmentDurationMinutes(config.appointmentDurationMinutes || 30);
         }
       } catch (err) {
         console.error('Failed to load clinic settings:', err);
@@ -89,6 +91,7 @@ export default function SettingsPage() {
         openTime,
         closeTime,
         closedDays,
+        appointmentDurationMinutes: parseInt(appointmentDurationMinutes),
         availableSlots: [] // Managed dynamically by server
       };
 
@@ -267,6 +270,26 @@ export default function SettingsPage() {
                     disabled={savingConfig}
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Appointment Slot Duration</label>
+              <div className={styles.inputWrapper}>
+                <Clock className={styles.fieldIcon} />
+                <select 
+                  value={appointmentDurationMinutes} 
+                  onChange={(e) => setAppointmentDurationMinutes(e.target.value)}
+                  disabled={savingConfig}
+                  style={{ paddingLeft: '3rem' }}
+                >
+                  <option value={10}>10 Minutes</option>
+                  <option value={15}>15 Minutes</option>
+                  <option value={20}>20 Minutes</option>
+                  <option value={30}>30 Minutes (Default)</option>
+                  <option value={45}>45 Minutes</option>
+                  <option value={60}>60 Minutes</option>
+                </select>
               </div>
             </div>
 
