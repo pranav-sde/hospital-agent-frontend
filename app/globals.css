@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --bg-main: #03030c;
+  --bg-grid: rgba(99, 102, 241, 0.03);
+  --bg-card: rgba(10, 11, 30, 0.45);
+  --bg-card-hover: rgba(16, 18, 48, 0.6);
+  --border-neon: rgba(0, 242, 254, 0.15);
+  --border-neon-glow: rgba(0, 242, 254, 0.3);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #9ea7c1;
+  --text-muted: #576081;
+  
+  --accent-cyan: #00f2fe;
+  --accent-blue: #4facfe;
+  --accent-purple: #7f00ff;
+  --accent-pink: #ec4899;
+  
+  --glow-cyan: rgba(0, 242, 254, 0.4);
+  --glow-pink: rgba(236, 72, 153, 0.4);
+  
+  --status-success: #00ffaa;
+  --status-success-bg: rgba(0, 255, 170, 0.1);
+  --status-warning: #ffb700;
+  --status-warning-bg: rgba(255, 183, 0, 0.15);
+  --status-danger: #ff3b30;
+  --status-danger-bg: rgba(255, 59, 48, 0.1);
+  --status-info: #00d2ff;
+  --status-info-bg: rgba(0, 210, 255, 0.1);
+  
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-heading: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Moving grid background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+  z-index: -2;
+  animation: gridMove 200s linear infinite;
+  pointer-events: none;
+}
+
+/* Gradient orbs overlay */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(127, 0, 255, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(0, 242, 254, 0.08) 0%, transparent 40%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.5px;
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Cyber card component */
+.cyber-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border-neon);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.cyber-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 242, 254, 0.05),
+    transparent
+  );
+  transition: 0.5s;
+  pointer-events: none;
+}
+
+.cyber-card:hover::before {
+  left: 150%;
+  transition: 0.8s ease-in-out;
+}
+
+.cyber-card:hover {
+  border-color: var(--border-neon-glow);
+  box-shadow: 
+    0 12px 40px 0 rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(0, 242, 254, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Laser sweep line overlay */
+.laser-sweep {
+  position: relative;
+}
+
+.laser-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+  animation: laserLine 6s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Custom interactive input styling */
+input, select, textarea {
+  background: rgba(5, 6, 20, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-cyan);
+  border-bottom-color: var(--accent-cyan);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+  background: rgba(10, 11, 30, 0.8);
+}
+
+/* Glowing Cyber Button */
+.cyber-button {
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+  color: #03030c;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.85rem 1.75rem;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+  z-index: 1;
+}
+
+.cyber-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.4s ease;
+}
+
+.cyber-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+}
+
+.cyber-button:hover::after {
+  opacity: 1;
+}
+
+.cyber-button:active {
+  transform: translateY(0);
+}
+
+.cyber-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 242, 254, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 242, 254, 0.4);
+}
+
+/* Animations declarations */
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 1000px 1000px; }
+}
+
+@keyframes laserLine {
+  0% { top: 0%; opacity: 0; }
+  5% { opacity: 0.8; }
+  95% { opacity: 0.8; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes pulseNeon {
+  0% { box-shadow: 0 0 5px rgba(0, 242, 254, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(0, 242, 254, 0.5); }
+  100% { box-shadow: 0 0 5px rgba(0, 242, 254, 0.2); }
+}
+
+.pulse-neon {
+  animation: pulseNeon 2s infinite;
+}

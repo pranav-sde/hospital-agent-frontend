@@ -1,0 +1,195 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.75px;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #ffffff 50%, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  height: fit-content;
+  border: 1px solid var(--border-neon);
+  border-radius: 12px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 1rem;
+}
+
+.cardIcon {
+  color: var(--accent-cyan);
+  width: 22px;
+  height: 22px;
+  filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.row > div {
+  flex: 1;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.inputGroup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fieldIcon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.inputWrapper input {
+  padding-left: 3rem;
+  height: 3.25rem;
+  font-size: 0.95rem;
+  background: rgba(5, 6, 20, 0.8);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.inputWrapper input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.inputWrapper input:focus + .fieldIcon {
+  color: var(--accent-cyan);
+}
+
+.daysSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.dayBadge {
+  background: rgba(5, 6, 20, 0.6);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+  color: var(--text-secondary);
+  padding: 0.6rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-heading);
+}
+
+.dayBadge:hover {
+  background: rgba(0, 242, 254, 0.05);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.dayChecked {
+  background: rgba(255, 59, 48, 0.1) !important;
+  border-color: rgba(255, 59, 48, 0.4) !important;
+  color: #ff8e8a !important;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.15);
+}
+
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.successAlert, .errorAlert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.successAlert {
+  background: var(--status-success-bg);
+  border: 1px solid rgba(0, 255, 170, 0.25);
+  color: #a7f3d0;
+}
+
+.errorAlert {
+  background: var(--status-danger-bg);
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  color: #fca5a5;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+}

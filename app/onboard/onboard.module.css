@@ -1,0 +1,310 @@
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-main);
+  padding: 2rem 1rem;
+}
+
+.container {
+  z-index: 10;
+  width: 100%;
+  max-width: 520px;
+}
+
+.card {
+  padding: 3rem 2.5rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+  border-radius: 16px;
+  background: rgba(10, 11, 30, 0.65);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.logoCircle {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.15);
+  transform: rotate(45deg);
+}
+
+.logo {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-cyan);
+  filter: drop-shadow(0 0 5px var(--accent-cyan));
+  transform: rotate(-45deg);
+}
+
+.header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #fff, var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  font-size: 0.8rem;
+  color: var(--accent-cyan);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+/* Steps Progress Tracker */
+.stepsBar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.stepIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  opacity: 0.35;
+  transition: opacity 0.4s ease;
+  flex: 1;
+}
+
+.stepActive {
+  opacity: 1;
+}
+
+.stepIndicator span {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.stepActive span {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.05);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+}
+
+.stepIndicator p {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.stepActive p {
+  color: var(--accent-cyan);
+}
+
+.connector {
+  height: 1.5px;
+  background-color: rgba(255, 255, 255, 0.08);
+  flex: 0.5;
+  margin-top: -1rem;
+}
+
+.content {
+  min-height: 260px;
+}
+
+.stepForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  animation: stepFade 0.4s ease forwards;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputGroup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fieldIcon {
+  position: absolute;
+  left: 1.25rem;
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.inputWrapper input, .inputWrapper select {
+  padding-left: 3rem;
+  height: 3.25rem;
+  font-size: 0.95rem;
+  background: rgba(5, 6, 20, 0.8);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.inputWrapper input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.inputWrapper input:focus + .fieldIcon {
+  color: var(--accent-cyan);
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+}
+
+.row > div {
+  flex: 1;
+}
+
+.daysSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.dayBadge {
+  background: rgba(5, 6, 20, 0.6);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+  color: var(--text-secondary);
+  padding: 0.6rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.dayBadge:hover {
+  background: rgba(0, 242, 254, 0.05);
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+.dayChecked {
+  background: rgba(255, 59, 48, 0.1) !important;
+  border-color: rgba(255, 59, 48, 0.4) !important;
+  color: #ff8e8a !important;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.15);
+}
+
+.navRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.backBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  padding: 0 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3.25rem;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.errorAlert {
+  background: var(--status-danger-bg);
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  color: #ff8e8a;
+  padding: 0.85rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: shake 0.35s ease-in-out;
+}
+
+.loaderWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-main);
+}
+
+@keyframes stepFade {
+  from { opacity: 0; transform: translateX(15px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@media (max-width: 576px) {
+  .card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .row {
+    flex-direction: column;
+    gap: 1.35rem;
+  }
+  
+  .stepsBar {
+    display: none; /* Hide steps bar on narrow screens for cleaner card spacing */
+  }
+}

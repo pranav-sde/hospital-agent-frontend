@@ -1,0 +1,282 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.75px;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #ffffff 50%, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.filterCard {
+  padding: 1.25rem 1.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-neon);
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchWrapper, .selectWrapper, .dateWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.searchWrapper input, .selectWrapper select, .dateWrapper input {
+  padding-left: 2.75rem;
+  height: 3rem;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 0.9rem;
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.searchWrapper input:focus, .selectWrapper select:focus, .dateWrapper input:focus {
+  border-color: var(--accent-cyan);
+}
+
+.searchWrapper input:focus + .filterIcon,
+.selectWrapper select:focus + .filterIcon,
+.dateWrapper input:focus + .filterIcon {
+  color: var(--accent-cyan);
+}
+
+.selectWrapper select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.clearBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.85rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: var(--font-heading);
+}
+
+.clearBtn:hover {
+  background: rgba(0, 242, 254, 0.08);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+}
+
+.tableCard {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border: 1px solid var(--border-neon);
+}
+
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.25px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 6, 20, 0.4);
+}
+
+.table td {
+  padding: 1.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.tableRow {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tableRow:hover {
+  background: rgba(0, 242, 254, 0.02);
+}
+
+.patientCell {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.phoneCell {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+.timeLabel {
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.statusBadge {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusScheduled {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid rgba(0, 255, 170, 0.2);
+}
+
+.statusRescheduled {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+}
+
+.statusCancelled {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+.cancelActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 59, 48, 0.04);
+  border: 1px solid rgba(255, 59, 48, 0.15);
+  color: #ff8e8a;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-heading);
+}
+
+.cancelActionBtn:hover {
+  background: rgba(255, 59, 48, 0.12);
+  color: #ff3b30;
+  border-color: rgba(255, 59, 48, 0.3);
+  box-shadow: 0 0 15px rgba(255, 59, 48, 0.15);
+}
+
+.trashIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.disabledAction {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.loadingState, .noDataState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.noDataIcon {
+  width: 42px;
+  height: 42px;
+  color: var(--text-muted);
+}
+
+.successAlert, .errorAlert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.15rem 1.75rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.successAlert {
+  background: var(--status-success-bg);
+  border: 1px solid rgba(0, 255, 170, 0.25);
+  color: #a7f3d0;
+}
+
+.errorAlert {
+  background: var(--status-danger-bg);
+  border: 1px solid rgba(255, 59, 48, 0.25);
+  color: #fca5a5;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .filterGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchWrapper, .selectWrapper, .dateWrapper {
+    width: 100%;
+  }
+
+  .clearBtn {
+    width: 100%;
+  }
+}

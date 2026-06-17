@@ -1,0 +1,332 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.75px;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #ffffff 50%, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  letter-spacing: 0.25px;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.statCard {
+  padding: 1.75rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border-neon);
+}
+
+/* Stat card glowing border lines on hover */
+.statCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--card-accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.statCard:hover::after {
+  opacity: 1;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-accent);
+  box-shadow: 0 12px 35px var(--card-glow);
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.statTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+}
+
+.statIconWrapper {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.statCard:hover .statIconWrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.statIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.5rem;
+}
+
+.chartCard, .scheduleCard {
+  padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid var(--border-neon);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cardIcon {
+  color: var(--accent-cyan);
+  width: 20px;
+  height: 20px;
+  filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+.chartWrapper {
+  width: 100%;
+}
+
+.scheduleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 1rem;
+}
+
+.scheduleHeader h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.25px;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 220px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 0.85rem;
+  color: var(--text-muted);
+  width: 16px;
+  height: 16px;
+}
+
+.searchWrapper input {
+  padding-left: 2.25rem;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.scheduleList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  overflow-y: auto;
+  max-height: 290px;
+  padding-right: 0.25rem;
+}
+
+.scheduleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.15rem;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scheduleRow:hover {
+  background: rgba(0, 242, 254, 0.02);
+  border-color: rgba(0, 242, 254, 0.2);
+  transform: scale(1.01) translateX(3px);
+}
+
+.patientMain {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.patientName {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.patientPhone {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  opacity: 0.8;
+}
+
+.timeBadge {
+  background: rgba(0, 242, 254, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.statusBadge {
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+}
+
+.statusScheduled {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid rgba(0, 255, 170, 0.2);
+}
+
+.statusRescheduled {
+  background: var(--status-info-bg);
+  color: var(--status-info);
+  border: 1px solid rgba(0, 210, 255, 0.2);
+}
+
+.statusCancelled {
+  background: var(--status-danger-bg);
+  color: var(--status-danger);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+}
+
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+  gap: 1rem;
+  color: var(--text-secondary);
+}
+
+.noData p {
+  font-size: 0.95rem;
+}
+
+.bookPrompt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-cyan);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: gap 0.2s ease;
+}
+
+.bookPrompt:hover {
+  text-decoration: underline;
+  gap: 0.6rem;
+}
+
+.loadingWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .dataGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  
+  .header .actions {
+    width: 100%;
+  }
+  
+  .header .actions a {
+    width: 100%;
+    justify-content: center;
+  }
+}
