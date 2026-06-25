@@ -22,6 +22,7 @@ export default function AppointmentsPage() {
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [dateFilter, setDateFilter] = useState('');
   const [cancellingId, setCancellingId] = useState(null);
+  const [attendingId, setAttendingId] = useState(null);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
@@ -73,11 +74,34 @@ export default function AppointmentsPage() {
     }
   };
 
+  const handleAttend = async (id) => {
+    if (!window.confirm('Are you sure you want to mark this appointment as completed/attended?')) return;
+
+    setAttendingId(id);
+    try {
+      await apiRequest(`/api/appointments/${id}/attend`, {
+        method: 'POST'
+      });
+      setSuccessMsg('Appointment marked as attended successfully.');
+      setTimeout(() => setSuccessMsg(''), 4000);
+      // Refresh list
+      fetchAppointments();
+    } catch (err) {
+      console.error('Failed to mark appointment attended:', err);
+      setError(err.message || 'Failed to mark appointment attended');
+      setTimeout(() => setError(''), 4000);
+    } finally {
+      setAttendingId(null);
+    }
+  };
+
   const getStatusClass = (status) => {
     switch (status?.toUpperCase()) {
       case 'SCHEDULED': return styles.statusScheduled;
       case 'RESCHEDULED': return styles.statusRescheduled;
       case 'CANCELLED': return styles.statusCancelled;
+      case 'ATTENDED': return styles.statusAttended;
+      case 'MISSED': return styles.statusMissed;
       default: return '';
     }
   };
@@ -133,6 +157,8 @@ export default function AppointmentsPage() {
               <option value="ALL">All Statuses</option>
               <option value="SCHEDULED">Scheduled</option>
               <option value="RESCHEDULED">Rescheduled</option>
+              <option value="ATTENDED">Attended</option>
+              <option value="MISSED">Missed</option>
               <option value="CANCELLED">Cancelled</option>
             </select>
           </div>
@@ -197,17 +223,33 @@ export default function AppointmentsPage() {
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      {app.status !== 'CANCELLED' ? (
-                        <button 
-                          className={styles.cancelActionBtn}
-                          onClick={() => handleCancel(app.id)}
-                          disabled={cancellingId === app.id}
-                        >
-                          <Trash2 className={styles.trashIcon} />
-                          <span>{cancellingId === app.id ? 'Revoking...' : 'Cancel'}</span>
-                        </button>
-                      ) : (
+                      {app.status === 'SCHEDULED' || app.status === 'RESCHEDULED' ? (
+                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                          <button 
+                            className={styles.attendActionBtn}
+                            onClick={() => handleAttend(app.id)}
+                            disabled={attendingId === app.id}
+                          >
+                            <Check style={{ width: 14, height: 14 }} />
+                            <span>{attendingId === app.id ? 'Saving...' : 'Attend'}</span>
+                          </button>
+                          <button 
+                            className={styles.cancelActionBtn}
+                            onClick={() => handleCancel(app.id)}
+                            disabled={cancellingId === app.id}
+                          >
+                            <Trash2 className={styles.trashIcon} />
+                            <span>{cancellingId === app.id ? 'Revoking...' : 'Cancel'}</span>
+                          </button>
+                        </div>
+                      ) : app.status === 'ATTENDED' ? (
+                        <span className={styles.attendedActionLabel}>Completed</span>
+                      ) : app.status === 'CANCELLED' ? (
                         <span className={styles.disabledAction}>Revoked</span>
+                      ) : app.status === 'MISSED' ? (
+                        <span className={styles.missedActionLabel}>No-Show</span>
+                      ) : (
+                        <span className={styles.disabledAction}>{app.status}</span>
                       )}
                     </td>
                   </tr>

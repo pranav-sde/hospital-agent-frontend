@@ -187,6 +187,18 @@
   border: 1px solid rgba(255, 59, 48, 0.2);
 }
 
+.statusAttended {
+  background: var(--status-success-bg);
+  color: var(--status-success);
+  border: 1px solid rgba(0, 255, 170, 0.2);
+}
+
+.statusMissed {
+  background: var(--status-warning-bg);
+  color: var(--status-warning);
+  border: 1px solid rgba(255, 183, 0, 0.2);
+}
+
 .cancelActionBtn {
   display: inline-flex;
   align-items: center;
@@ -207,6 +219,44 @@
   color: #ff3b30;
   border-color: rgba(255, 59, 48, 0.3);
   box-shadow: 0 0 15px rgba(255, 59, 48, 0.15);
+}
+
+.attendActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 255, 170, 0.04);
+  border: 1px solid rgba(0, 255, 170, 0.15);
+  color: #a7f3d0;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-heading);
+}
+
+.attendActionBtn:hover {
+  background: rgba(0, 255, 170, 0.12);
+  color: var(--status-success);
+  border-color: rgba(0, 255, 170, 0.3);
+  box-shadow: 0 0 15px rgba(0, 255, 170, 0.15);
+}
+
+.attendedActionLabel {
+  font-size: 0.8rem;
+  color: var(--status-success);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.missedActionLabel {
+  font-size: 0.8rem;
+  color: var(--status-warning);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 .trashIcon {

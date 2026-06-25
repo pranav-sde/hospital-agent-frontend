@@ -82,6 +82,8 @@ export default function DashboardHome() {
       case 'SCHEDULED': return styles.statusScheduled;
       case 'RESCHEDULED': return styles.statusRescheduled;
       case 'CANCELLED': return styles.statusCancelled;
+      case 'ATTENDED': return styles.statusAttended;
+      case 'MISSED': return styles.statusMissed;
       default: return '';
     }
   };
