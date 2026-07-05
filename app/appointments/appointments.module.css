@@ -330,3 +330,18 @@
     width: 100%;
   }
 }
+
+.doctorCell {
+  vertical-align: middle;
+}
+
+.doctorBadge {
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}

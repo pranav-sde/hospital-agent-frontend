@@ -2,11 +2,23 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '@/lib/api';
-import { Calendar, User, Phone, Clock, Check, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Calendar, User, Phone, Clock, Check, AlertCircle, Users } from 'lucide-react';
 import styles from './book.module.css';
 
 export default function BookAppointmentPage() {
+  const { user } = useAuth();
   const dateInputRef = useRef(null);
+  
+  // Doctors & Selection
+  const [doctors, setDoctors] = useState([]);
+  const [selectedDoctorId, setSelectedDoctorId] = useState('');
+  
+  // Slots
+  const [slots, setSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+
+  // Form states
   const [patientName, setPatientName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [date, setDate] = useState('');
@@ -16,10 +28,56 @@ export default function BookAppointmentPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
-  // Check availability when date or time changes
+  // 1. Fetch active doctors
   useEffect(() => {
-    if (!date || !time) {
+    const fetchDoctors = async () => {
+      try {
+        const data = await apiRequest('/api/doctors');
+        setDoctors(data);
+        
+        // If logged in as DOCTOR, preselect their doctorId and lock it
+        if (user?.role === 'DOCTOR' && user?.doctorId) {
+          setSelectedDoctorId(user.doctorId);
+        } else if (data.length > 0) {
+          setSelectedDoctorId(data[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load doctors:', err);
+        setError('Could not load the active doctor directory.');
+      }
+    };
+    fetchDoctors();
+  }, [user]);
+
+  // 2. Dynamically load slots when doctor or date changes
+  useEffect(() => {
+    if (!selectedDoctorId || !date) {
+      setSlots([]);
+      setTime('');
+      return;
+    }
+
+    const loadSlots = async () => {
+      setLoadingSlots(true);
+      try {
+        const data = await apiRequest(`/api/doctors/${selectedDoctorId}/slots?date=${date}`);
+        setSlots(data);
+        setTime(''); // Reset time selection on date/doctor change
+      } catch (err) {
+        console.error('Failed to fetch slots:', err);
+        setError('Could not retrieve available time slots for the selected date.');
+      } finally {
+        setLoadingSlots(false);
+      }
+    };
+    loadSlots();
+  }, [selectedDoctorId, date]);
+
+  // 3. Verify availability (final check) when time changes
+  useEffect(() => {
+    if (!selectedDoctorId || !date || !time) {
       setSlotStatus({ checked: false, available: false, message: '' });
       return;
     }
@@ -27,7 +85,7 @@ export default function BookAppointmentPage() {
     const checkSlot = async () => {
       setChecking(true);
       try {
-        const res = await apiRequest(`/api/appointments/check-availability?date=${date}&time=${time}`);
+        const res = await apiRequest(`/api/appointments/check-availability?date=${date}&time=${time}&doctorId=${selectedDoctorId}`);
         setSlotStatus({
           checked: true,
           available: res.available,
@@ -44,17 +102,40 @@ export default function BookAppointmentPage() {
       }
     };
 
-    const debounceTimer = setTimeout(checkSlot, 500);
+    const debounceTimer = setTimeout(checkSlot, 300);
     return () => clearTimeout(debounceTimer);
-  }, [date, time]);
+  }, [selectedDoctorId, date, time]);
+
+  // Phone number validation: strip non-digits, validate length
+  const handlePhoneChange = (e) => {
+    const digits = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+    setPhoneNumber(digits);
+
+    if (digits.length === 0) {
+      setPhoneError('');
+    } else if (digits.length < 10) {
+      setPhoneError(`Phone number must be exactly 10 digits (${digits.length}/10).`);
+    } else if (!/^[6-9]/.test(digits)) {
+      setPhoneError('Phone number must start with 6, 7, 8, or 9.');
+    } else {
+      setPhoneError('');
+    }
+  };
+
+  const isPhoneValid = phoneNumber.length === 10 && /^[6-9]\d{9}$/.test(phoneNumber);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess(false);
 
-    if (!patientName || !phoneNumber || !date || !time) {
+    if (!patientName || !phoneNumber || !date || !time || !selectedDoctorId) {
       setError('Please fill in all the details.');
+      return;
+    }
+
+    if (!isPhoneValid) {
+      setError('Phone number must contain exactly 10 digits.');
       return;
     }
 
@@ -67,7 +148,13 @@ export default function BookAppointmentPage() {
     try {
       await apiRequest('/api/appointments/book', {
         method: 'POST',
-        body: JSON.stringify({ patientName, phoneNumber, date, time })
+        body: JSON.stringify({ 
+          patientName, 
+          phoneNumber, 
+          date, 
+          time, 
+          doctorId: selectedDoctorId 
+        })
       });
       setSuccess(true);
       // Reset form
@@ -82,6 +169,17 @@ export default function BookAppointmentPage() {
       setSubmitting(false);
     }
   };
+
+  const formatTime12h = (time24) => {
+    if (!time24) return '';
+    const [hour, minute] = time24.split(':');
+    const h = parseInt(hour);
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const displayHour = h % 12 || 12;
+    return `${String(displayHour).padStart(2, '0')}:${minute} ${ampm}`;
+  };
+
+  const activeDoctorName = doctors.find(d => d.id === selectedDoctorId)?.name || 'the clinic';
 
   return (
     <div className={styles.container}>
@@ -113,6 +211,31 @@ export default function BookAppointmentPage() {
           )}
 
           <form onSubmit={handleSubmit} className={styles.form}>
+            {/* Doctor Selection */}
+            <div className={styles.inputGroup}>
+              <label>Select Practitioner</label>
+              <div className={styles.inputWrapper}>
+                <Users className={styles.inputIcon} />
+                <select
+                  value={selectedDoctorId}
+                  onChange={(e) => setSelectedDoctorId(e.target.value)}
+                  required
+                  disabled={submitting || user?.role === 'DOCTOR'}
+                  style={{ paddingLeft: '3rem' }}
+                >
+                  {doctors.length === 0 ? (
+                    <option value="">No active doctors found</option>
+                  ) : (
+                    doctors.map((doc) => (
+                      <option key={doc.id} value={doc.id}>
+                        {doc.name} ({doc.specialization})
+                      </option>
+                    ))
+                  )}
+                </select>
+              </div>
+            </div>
+
             <div className={styles.inputGroup}>
               <label>Patient Full Name</label>
               <div className={styles.inputWrapper}>
@@ -136,11 +259,21 @@ export default function BookAppointmentPage() {
                   type="tel" 
                   placeholder="e.g. 9876543210" 
                   value={phoneNumber} 
-                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onChange={handlePhoneChange}
+                  maxLength={10}
                   required 
                   disabled={submitting}
+                  className={phoneError ? styles.inputError : ''}
                 />
               </div>
+              {phoneError && (
+                <span className={styles.fieldError}>{phoneError}</span>
+              )}
+              {isPhoneValid && (
+                <span className={styles.fieldValid}>
+                  <Check style={{ width: 14, height: 14 }} /> Valid phone number
+                </span>
+              )}
             </div>
 
             <div className={styles.row}>
@@ -167,15 +300,18 @@ export default function BookAppointmentPage() {
                     value={time} 
                     onChange={(e) => setTime(e.target.value)}
                     required 
-                    disabled={submitting}
+                    disabled={submitting || loadingSlots || !date}
                   >
-                    <option value="">Select slot</option>
-                    <option value="18:00">06:00 PM</option>
-                    <option value="18:30">06:30 PM</option>
-                    <option value="19:00">07:00 PM</option>
-                    <option value="19:30">07:30 PM</option>
-                    <option value="20:00">08:00 PM</option>
-                    <option value="20:30">08:30 PM</option>
+                    <option value="">{loadingSlots ? 'Loading slots...' : !date ? 'Choose date first' : 'Select slot'}</option>
+                    {slots.map((s) => (
+                      <option 
+                        key={s.time} 
+                        value={s.time}
+                        disabled={!s.available}
+                      >
+                        {formatTime12h(s.time)} {!s.available ? '(Booked)' : ''}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -206,7 +342,7 @@ export default function BookAppointmentPage() {
               type="submit" 
               className="primary-button" 
               style={{ width: '100%', height: '3rem', marginTop: '1rem' }} 
-              disabled={submitting || checking || (date && time && !slotStatus.available)}
+              disabled={submitting || checking || loadingSlots || !isPhoneValid || (date && time && !slotStatus.available)}
             >
               {submitting ? 'Writing to Ledger...' : 'Schedule Appointment'}
             </button>
@@ -215,19 +351,19 @@ export default function BookAppointmentPage() {
 
         {/* Info panel */}
         <div className={`${styles.infoCard} glass`}>
-          <h3>Schedule Policies</h3>
+          <h3>Practitioner Schedule Policies</h3>
           <ul>
             <li>
-              <strong>Operating Hours:</strong> Clinic is configured to accept slots between 6:00 PM and 8:30 PM only.
+              <strong>Assigned Doctor:</strong> Bookings are scheduled directly to <strong>{activeDoctorName}</strong>.
             </li>
             <li>
-              <strong>Slot Length:</strong> Standard appointment time blocks are 30 minutes in duration.
+              <strong>Dynamic Slot Allocations:</strong> Time slots are dynamically generated based on the doctor's specific operating hours and custom session times.
             </li>
             <li>
-              <strong>Closed Days:</strong> Sunday clinic services are closed. No bookings will be written to database.
+              <strong>Conflict Prevention:</strong> Real-time locking protects against concurrent double-booking of identical slots.
             </li>
             <li>
-              <strong>Verification:</strong> High-priority notifications are automatically dispatched if any reschedule matches conflicting client slots.
+              <strong>Reschedule Integrity:</strong> Past time blocks are locked and cannot be selected.
             </li>
           </ul>
         </div>

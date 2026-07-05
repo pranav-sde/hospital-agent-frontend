@@ -1,0 +1,299 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.75px;
+  margin-bottom: 0.35rem;
+  background: linear-gradient(135deg, #ffffff 50%, var(--accent-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.filterCard {
+  padding: 1.25rem 1.75rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-neon);
+}
+
+.filterGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.searchWrapper, .selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 240px;
+}
+
+.filterIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.searchWrapper input, .selectWrapper select {
+  padding-left: 2.75rem;
+  height: 3rem;
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 0.9rem;
+  border: 1px solid rgba(0, 242, 254, 0.15);
+}
+
+.searchWrapper input:focus, .selectWrapper select:focus {
+  border-color: var(--accent-cyan);
+}
+
+.searchWrapper input:focus + .filterIcon,
+.selectWrapper select:focus + .filterIcon {
+  color: var(--accent-cyan);
+}
+
+.selectWrapper select {
+  cursor: pointer;
+  appearance: none;
+}
+
+.clearBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.85rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.clearBtn:hover {
+  background: rgba(0, 242, 254, 0.08);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+}
+
+.tableCard {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  border: 1px solid var(--border-neon);
+}
+
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.25px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 6, 20, 0.4);
+}
+
+.table td {
+  padding: 1.5rem;
+  font-size: 0.95rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  vertical-align: middle;
+}
+
+.tableRow {
+  transition: all 0.3s ease;
+}
+
+.tableRow:hover {
+  background: rgba(0, 242, 254, 0.02);
+}
+
+.patientCell {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.phoneCell {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.doctorBadge {
+  background: rgba(0, 242, 254, 0.08);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  color: var(--accent-cyan);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.duration {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.statusCompleted {
+  color: var(--status-success);
+  background: var(--status-success-bg);
+  border: 1px solid rgba(0, 255, 170, 0.15);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.statusFailed {
+  color: var(--status-danger);
+  background: var(--status-danger-bg);
+  border: 1px solid rgba(255, 59, 48, 0.15);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.audioCol {
+  min-width: 220px;
+}
+
+.miniPlayer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.playPauseBtn {
+  background: rgba(0, 242, 254, 0.1);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: var(--accent-cyan);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.playPauseBtn:hover {
+  background: var(--accent-cyan);
+  color: #000;
+  box-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.viewBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.viewBtn:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.05);
+}
+
+.loadingState, .noDataState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  gap: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.noDataIcon {
+  width: 42px;
+  height: 42px;
+  color: var(--text-muted);
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 6, 20, 0.4);
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.pageBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.pageBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .filterGroup {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchWrapper, .selectWrapper {
+    width: 100%;
+  }
+
+  .clearBtn {
+    width: 100%;
+  }
+}

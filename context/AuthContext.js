@@ -17,6 +17,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const initAuth = async () => {
       const savedUser = localStorage.getItem('hospital_username');
+      const savedRole = localStorage.getItem('hospital_role') || 'ADMIN';
+      const savedDocId = localStorage.getItem('hospital_doctorId');
       const refreshToken = getRefreshToken();
 
       // Check onboarding status first
@@ -49,7 +51,13 @@ export function AuthProvider({ children }) {
             const data = await res.json();
             setAccessToken(data.accessToken);
             setRefreshToken(data.refreshToken); // Rotated token
-            setUser({ username: savedUser });
+            
+            // Note: Refresh API also returns role/doctorId if decoded, but fallback to saved ones is safe
+            setUser({ 
+              username: savedUser, 
+              role: data.role || savedRole, 
+              doctorId: data.doctorId || savedDocId 
+            });
           } else {
             clearTokens();
           }
@@ -93,7 +101,17 @@ export function AuthProvider({ children }) {
       setAccessToken(data.accessToken);
       setRefreshToken(data.refreshToken);
       localStorage.setItem('hospital_username', data.username);
-      setUser({ username: data.username });
+      localStorage.setItem('hospital_role', data.role || 'ADMIN');
+      if (data.doctorId) {
+        localStorage.setItem('hospital_doctorId', data.doctorId);
+      } else {
+        localStorage.removeItem('hospital_doctorId');
+      }
+      setUser({ 
+        username: data.username, 
+        role: data.role || 'ADMIN', 
+        doctorId: data.doctorId || null 
+      });
       router.push('/');
       return { success: true };
     } catch (error) {
@@ -118,6 +136,9 @@ export function AuthProvider({ children }) {
       console.error('Logout API call failed:', e);
     } finally {
       clearTokens();
+      localStorage.removeItem('hospital_username');
+      localStorage.removeItem('hospital_role');
+      localStorage.removeItem('hospital_doctorId');
       setUser(null);
       router.push('/login');
     }

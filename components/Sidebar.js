@@ -9,7 +9,9 @@ import {
   CalendarPlus, 
   Settings, 
   LogOut, 
-  Activity 
+  Activity,
+  Mic,
+  Users
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -21,8 +23,15 @@ export default function Sidebar() {
     { name: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { name: 'Appointments', icon: CalendarRange, path: '/appointments' },
     { name: 'Book Appointment', icon: CalendarPlus, path: '/book' },
+    { name: 'Call Recordings', icon: Mic, path: '/recordings' },
+    { name: 'Manage Doctors', icon: Users, path: '/doctors', role: 'ADMIN' },
     { name: 'Clinic Settings', icon: Settings, path: '/settings' },
   ];
+
+  const filteredMenuItems = menuItems.filter(item => {
+    if (!item.role) return true;
+    return item.role === user?.role;
+  });
 
   return (
     <aside className={styles.sidebar}>
@@ -35,7 +44,7 @@ export default function Sidebar() {
       </div>
 
       <nav className={styles.navigation}>
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const isActive = pathname === item.path;
           return (
             <Link 
@@ -58,7 +67,9 @@ export default function Sidebar() {
           </div>
           <div className={styles.userDetails}>
             <span className={styles.userName}>{user?.username || 'Admin'}</span>
-            <span className={styles.userRole}>Administrator</span>
+            <span className={styles.userRole}>
+              {user?.role === 'DOCTOR' ? 'Practitioner' : 'Administrator'}
+            </span>
           </div>
         </div>
         

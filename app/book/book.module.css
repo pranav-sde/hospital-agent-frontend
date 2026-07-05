@@ -256,6 +256,32 @@
   margin-top: 0.1rem;
 }
 
+/* Phone validation feedback */
+.fieldError {
+  font-size: 0.78rem;
+  color: #fca5a5;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: -0.25rem;
+  animation: slideIn 0.2s ease;
+}
+
+.fieldValid {
+  font-size: 0.78rem;
+  color: #a7f3d0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: -0.25rem;
+  animation: slideIn 0.2s ease;
+}
+
+.inputError {
+  border-color: var(--status-danger) !important;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.15) !important;
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

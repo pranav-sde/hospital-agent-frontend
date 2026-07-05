@@ -2,36 +2,61 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
 import { 
   Search, 
   Calendar, 
   Filter, 
   Trash2, 
-  ChevronRight, 
   Check, 
-  X,
-  AlertCircle
+  AlertCircle,
+  Users
 } from 'lucide-react';
 import styles from './appointments.module.css';
 
 export default function AppointmentsPage() {
+  const { user } = useAuth();
   const dateInputRef = useRef(null);
+  
   const [appointments, setAppointments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [dateFilter, setDateFilter] = useState('');
+  const [doctorFilter, setDoctorFilter] = useState('');
   const [cancellingId, setCancellingId] = useState(null);
   const [attendingId, setAttendingId] = useState(null);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
 
+  // 1. Fetch active doctors (for dropdown filters and mapping doctorId to doctorName)
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const data = await apiRequest('/api/doctors');
+        setDoctors(data);
+      } catch (err) {
+        console.error('Failed to load doctors:', err);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
+  // 2. Fetch appointments
   const fetchAppointments = async () => {
     setLoading(true);
     try {
       let query = `?status=${statusFilter}`;
       if (search) query += `&phone=${search}`;
       if (dateFilter) query += `&date=${dateFilter}`;
+      
+      if (user?.role === 'DOCTOR') {
+        // Enforce doctorId mapping
+        query += `&doctorId=${user.doctorId}`;
+      } else if (doctorFilter) {
+        query += `&doctorId=${doctorFilter}`;
+      }
       
       const data = await apiRequest(`/api/appointments${query}`);
       setAppointments(data);
@@ -45,13 +70,12 @@ export default function AppointmentsPage() {
   };
 
   useEffect(() => {
-    // Debounce search slightly or reload on filter change
     const delayDebounce = setTimeout(() => {
       fetchAppointments();
     }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [statusFilter, dateFilter, search]);
+  }, [statusFilter, dateFilter, search, doctorFilter, user]);
 
   const handleCancel = async (id) => {
     if (!window.confirm('Are you sure you want to cancel this appointment?')) return;
@@ -63,7 +87,6 @@ export default function AppointmentsPage() {
       });
       setSuccessMsg('Appointment cancelled successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      // Refresh list
       fetchAppointments();
     } catch (err) {
       console.error('Failed to cancel appointment:', err);
@@ -84,7 +107,6 @@ export default function AppointmentsPage() {
       });
       setSuccessMsg('Appointment marked as attended successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      // Refresh list
       fetchAppointments();
     } catch (err) {
       console.error('Failed to mark appointment attended:', err);
@@ -114,6 +136,14 @@ export default function AppointmentsPage() {
       return dateStr;
     }
   };
+
+  const getDoctorName = (id) => {
+    if (!id) return 'Default Doctor';
+    const doc = doctors.find(d => d.id === id);
+    return doc ? doc.name : 'Loading...';
+  };
+
+  const isAdmin = user?.role === 'ADMIN';
 
   return (
     <div className={styles.container}>
@@ -163,6 +193,19 @@ export default function AppointmentsPage() {
             </select>
           </div>
 
+          {/* Doctor filter dropdown (Only for Admin) */}
+          {isAdmin && (
+            <div className={styles.selectWrapper}>
+              <Users className={styles.filterIcon} />
+              <select value={doctorFilter} onChange={(e) => setDoctorFilter(e.target.value)}>
+                <option value="">All Doctors</option>
+                {doctors.map(doc => (
+                  <option key={doc.id} value={doc.id}>{doc.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className={styles.dateWrapper}>
             <Calendar className={styles.filterIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
             <input 
@@ -173,13 +216,14 @@ export default function AppointmentsPage() {
             />
           </div>
 
-          {(search || statusFilter !== 'ALL' || dateFilter) && (
+          {(search || statusFilter !== 'ALL' || dateFilter || (isAdmin && doctorFilter)) && (
             <button 
               className={styles.clearBtn} 
               onClick={() => {
                 setSearch('');
                 setStatusFilter('ALL');
                 setDateFilter('');
+                setDoctorFilter('');
               }}
             >
               Reset Filters
@@ -202,6 +246,7 @@ export default function AppointmentsPage() {
                 <tr>
                   <th>Patient Name</th>
                   <th>Contact Phone</th>
+                  {isAdmin && <th>Doctor</th>}
                   <th>Appt Date</th>
                   <th>Appt Time</th>
                   <th>Status</th>
@@ -213,6 +258,13 @@ export default function AppointmentsPage() {
                   <tr key={app.id} className={styles.tableRow}>
                     <td className={styles.patientCell}>{app.patientName}</td>
                     <td className={styles.phoneCell}>{app.phoneNumber}</td>
+                    {isAdmin && (
+                      <td className={styles.doctorCell}>
+                        <span className={styles.doctorBadge}>
+                          {getDoctorName(app.doctorId)}
+                        </span>
+                      </td>
+                    )}
                     <td>{formatDate(app.date)}</td>
                     <td>
                       <span className={styles.timeLabel}>{app.time}</span>
