@@ -82,7 +82,7 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      const isPublicPath = pathname === '/login' || pathname === '/onboard';
+      const isPublicPath = pathname === '/login' || pathname === '/onboard' || pathname === '/signup';
       if (!user && !isPublicPath) {
         router.push('/login');
       } else if (user && isPublicPath) {

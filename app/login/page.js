@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import AnimatedOrbs from '@/components/AnimatedOrbs';
 import { Activity, Lock, User, Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 import styles from './login.module.css';
 
 export default function LoginPage() {
@@ -160,6 +161,13 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          <div className={styles.signupLink}>
+            Are you a practitioner?{' '}
+            <Link href="/signup" className={styles.linkText}>
+              Register Doctor Account
+            </Link>
+          </div>
 
           <div className={styles.terminalLog}>
             <div className={styles.terminalDot} />
