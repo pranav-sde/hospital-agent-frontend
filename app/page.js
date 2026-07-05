@@ -12,7 +12,8 @@ import {
   Plus, 
   Search, 
   Activity,
-  ArrowRight
+  ArrowRight,
+  Filter
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -23,10 +24,13 @@ import {
   Tooltip, 
   CartesianGrid 
 } from 'recharts';
+import { useAuth } from '@/context/AuthContext';
 import styles from './page.module.css';
 
 export default function DashboardHome() {
+  const { user } = useAuth();
   const dateInputRef = useRef(null);
+  
   const [stats, setStats] = useState({
     todayCount: 0,
     upcomingCount: 0,
@@ -34,16 +38,47 @@ export default function DashboardHome() {
     uniquePatients: 0,
     trend: []
   });
+  const [doctors, setDoctors] = useState([]);
+  const [doctorFilter, setDoctorFilter] = useState('');
   const [todaySchedule, setTodaySchedule] = useState([]);
   const [loading, setLoading] = useState(true);
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // 1. Set initial date on load
+  useEffect(() => {
+    const tzDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+    setSelectedDate(tzDate);
+  }, []);
+
+  // 2. Fetch doctors if Admin
+  useEffect(() => {
+    if (user?.role === 'ADMIN') {
+      const fetchDoctors = async () => {
+        try {
+          const data = await apiRequest('/api/doctors');
+          setDoctors(data);
+        } catch (err) {
+          console.error('Failed to load doctors:', err);
+        }
+      };
+      fetchDoctors();
+    }
+  }, [user]);
+
+  // 3. Fetch stats whenever doctor filter or user changes
   useEffect(() => {
     async function fetchDashboardStats() {
+      setLoading(true);
       try {
-        const statsData = await apiRequest('/api/appointments/stats');
+        let url = '/api/appointments/stats';
+        if (user?.role === 'ADMIN' && doctorFilter) {
+          url += `?doctorId=${doctorFilter}`;
+        } else if (user?.role === 'DOCTOR' && user?.doctorId) {
+          url += `?doctorId=${user.doctorId}`;
+        }
+        const statsData = await apiRequest(url);
         setStats(statsData);
       } catch (err) {
         console.error('Failed to load stats:', err);
@@ -53,19 +88,22 @@ export default function DashboardHome() {
     }
 
     fetchDashboardStats();
-    
-    // Set initial date to today's date in Asia/Kolkata timezone
-    const tzDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
-    setSelectedDate(tzDate);
-  }, []);
+  }, [doctorFilter, user]);
 
+  // 4. Fetch schedule list on date/doctor filter change
   useEffect(() => {
     if (!selectedDate) return;
     
     async function fetchSchedule() {
       setScheduleLoading(true);
       try {
-        const scheduleData = await apiRequest(`/api/appointments?date=${selectedDate}`);
+        let url = `/api/appointments?date=${selectedDate}`;
+        if (user?.role === 'ADMIN' && doctorFilter) {
+          url += `&doctorId=${doctorFilter}`;
+        } else if (user?.role === 'DOCTOR' && user?.doctorId) {
+          url += `&doctorId=${user.doctorId}`;
+        }
+        const scheduleData = await apiRequest(url);
         setTodaySchedule(scheduleData);
       } catch (err) {
         console.error('Failed to load schedule:', err);
@@ -75,7 +113,7 @@ export default function DashboardHome() {
     }
 
     fetchSchedule();
-  }, [selectedDate]);
+  }, [selectedDate, doctorFilter, user]);
 
   const getStatusClass = (status) => {
     switch (status?.toUpperCase()) {
@@ -86,6 +124,12 @@ export default function DashboardHome() {
       case 'MISSED': return styles.statusMissed;
       default: return '';
     }
+  };
+
+  const getDoctorName = (id) => {
+    if (!id) return '';
+    const doc = doctors.find(d => d.id === id);
+    return doc ? doc.name : 'Practitioner';
   };
 
   const filteredSchedule = todaySchedule.filter(app => 
@@ -122,10 +166,25 @@ export default function DashboardHome() {
     <div className={styles.dashboard}>
       <header className={styles.header}>
         <div>
-          <h1>Clinic Overview</h1>
-          <p>Real-time telemetry and booking operations</p>
+          <h1>{user?.role === 'ADMIN' ? 'Clinic Overview' : 'My Schedule & Overview'}</h1>
+          <p>{user?.role === 'ADMIN' ? 'Clinic Administration Portal' : `Welcome, ${user?.name || 'Practitioner'}`}</p>
         </div>
         <div className={styles.actions}>
+          {user?.role === 'ADMIN' && (
+            <div className={styles.doctorSelectWrapper}>
+              <Filter className={styles.filterIcon} />
+              <select 
+                value={doctorFilter} 
+                onChange={(e) => setDoctorFilter(e.target.value)}
+                className={styles.doctorSelect}
+              >
+                <option value="">All Practitioners</option>
+                {doctors.map(doc => (
+                  <option key={doc.id} value={doc.id}>{doc.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           <Link href="/book" className="primary-button" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Plus style={{ width: 18, height: 18 }} />
             <span>Book Appointment</span>
@@ -260,7 +319,14 @@ export default function DashboardHome() {
               filteredSchedule.map((app) => (
                 <div key={app.id} className={styles.scheduleRow}>
                   <div className={styles.patientMain}>
-                    <span className={styles.patientName}>{app.patientName}</span>
+                    <div className={styles.patientNameRow}>
+                      <span className={styles.patientName}>{app.patientName}</span>
+                      {user?.role === 'ADMIN' && app.doctorId && (
+                        <span className={styles.doctorBadge}>
+                          {getDoctorName(app.doctorId)}
+                        </span>
+                      )}
+                    </div>
                     <span className={styles.patientPhone}>{app.phoneNumber}</span>
                   </div>
                   <div className={styles.timeBadge}>
