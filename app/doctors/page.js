@@ -13,7 +13,8 @@ import {
   Phone, 
   Mail, 
   BookOpen,
-  UserCheck
+  UserCheck,
+  Lock
 } from 'lucide-react';
 import styles from './doctors.module.css';
 
@@ -36,6 +37,8 @@ export default function DoctorsPage() {
   const [breakEnd, setBreakEnd] = useState('14:00');
   const [slotDurationMinutes, setSlotDurationMinutes] = useState(15);
   const [workingDays, setWorkingDays] = useState(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const loadDoctors = async () => {
     try {
@@ -65,6 +68,8 @@ export default function DoctorsPage() {
     setBreakEnd('14:00');
     setSlotDurationMinutes(15);
     setWorkingDays(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']);
+    setUsername('');
+    setPassword('');
   };
 
   const handleDayToggle = (day) => {
@@ -99,7 +104,9 @@ export default function DoctorsPage() {
         breakStart: breakStart || null,
         breakEnd: breakEnd || null,
         slotDurationMinutes: parseInt(slotDurationMinutes),
-        workingDays
+        workingDays,
+        username,
+        password
       };
 
       if (editId) {
@@ -138,6 +145,8 @@ export default function DoctorsPage() {
     setBreakEnd(doc.breakEnd?.substring(0, 5) || '');
     setSlotDurationMinutes(doc.slotDurationMinutes || 15);
     setWorkingDays(doc.workingDays || []);
+    setUsername('');
+    setPassword('');
   };
 
   const handleDelete = async (id) => {
@@ -325,6 +334,38 @@ export default function DoctorsPage() {
                   required
                   disabled={submitting}
                 />
+              </div>
+            </div>
+
+            <div className={styles.row}>
+              <div className={styles.inputGroup}>
+                <label>Login Username</label>
+                <div className={styles.inputWrapper}>
+                  <UserPlus className={styles.fieldIcon} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g. drsmith" 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    required={!editId}
+                    disabled={submitting || !!editId}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label>Login Password</label>
+                <div className={styles.inputWrapper}>
+                  <Lock className={styles.fieldIcon} />
+                  <input 
+                    type="password" 
+                    placeholder={editId ? "Leave blank to keep unchanged" : "••••••••"} 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    required={!editId}
+                    disabled={submitting}
+                  />
+                </div>
               </div>
             </div>
 
