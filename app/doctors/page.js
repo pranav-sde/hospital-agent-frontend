@@ -145,7 +145,7 @@ export default function DoctorsPage() {
     setBreakEnd(doc.breakEnd?.substring(0, 5) || '');
     setSlotDurationMinutes(doc.slotDurationMinutes || 15);
     setWorkingDays(doc.workingDays || []);
-    setUsername('');
+    setUsername(doc.username || '');
     setPassword('');
   };
 
@@ -347,8 +347,8 @@ export default function DoctorsPage() {
                     placeholder="e.g. drsmith" 
                     value={username} 
                     onChange={(e) => setUsername(e.target.value)} 
-                    required={!editId}
-                    disabled={submitting || !!editId}
+                    required
+                    disabled={submitting}
                   />
                 </div>
               </div>

@@ -207,7 +207,7 @@ export default function AppointmentsPage() {
           )}
 
           <div className={styles.dateWrapper}>
-            <Calendar className={styles.filterIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
+            <Calendar className={`${styles.filterIcon} ${styles.clickableIcon}`} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
             <input 
               ref={dateInputRef}
               type="date" 

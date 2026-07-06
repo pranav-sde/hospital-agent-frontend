@@ -53,6 +53,12 @@
   height: 18px;
   pointer-events: none;
   transition: color 0.3s ease;
+  z-index: 2;
+}
+
+.clickableIcon {
+  pointer-events: auto !important;
+  cursor: pointer;
 }
 
 .searchWrapper input, .selectWrapper select, .dateWrapper input {

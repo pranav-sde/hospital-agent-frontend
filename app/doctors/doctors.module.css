@@ -99,6 +99,7 @@
   width: 18px;
   height: 18px;
   pointer-events: none;
+  z-index: 2;
 }
 
 .inputWrapper input, .inputWrapper select {

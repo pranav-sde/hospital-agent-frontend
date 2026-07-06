@@ -280,7 +280,7 @@ export default function BookAppointmentPage() {
               <div className={styles.inputGroup}>
                 <label>Appointment Date</label>
                 <div className={styles.inputWrapper}>
-                  <Calendar className={styles.inputIcon} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
+                  <Calendar className={`${styles.inputIcon} ${styles.clickableIcon}`} onClick={() => dateInputRef.current?.showPicker()} style={{ cursor: 'pointer' }} />
                   <input 
                     ref={dateInputRef}
                     type="date" 

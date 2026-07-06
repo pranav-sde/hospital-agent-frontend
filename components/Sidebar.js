@@ -25,7 +25,7 @@ export default function Sidebar() {
     { name: 'Book Appointment', icon: CalendarPlus, path: '/book' },
     { name: 'Call Recordings', icon: Mic, path: '/recordings' },
     { name: 'Manage Doctors', icon: Users, path: '/doctors', role: 'ADMIN' },
-    { name: 'Clinic Settings', icon: Settings, path: '/settings' },
+    { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 
   const filteredMenuItems = menuItems.filter(item => {

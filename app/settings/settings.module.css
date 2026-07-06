@@ -30,6 +30,18 @@
   gap: 1.5rem;
 }
 
+.singleCardGrid {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.singleCardGrid > div {
+  width: 100%;
+  max-width: 580px;
+}
+
 .card {
   padding: 2.5rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
