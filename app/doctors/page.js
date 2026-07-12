@@ -14,7 +14,8 @@ import {
   Mail, 
   BookOpen,
   UserCheck,
-  Lock
+  Lock,
+  Calendar
 } from 'lucide-react';
 import styles from './doctors.module.css';
 
@@ -36,6 +37,7 @@ export default function DoctorsPage() {
   const [breakStart, setBreakStart] = useState('13:00');
   const [breakEnd, setBreakEnd] = useState('14:00');
   const [slotDurationMinutes, setSlotDurationMinutes] = useState(15);
+  const [googleCalendarId, setGoogleCalendarId] = useState('');
   const [workingDays, setWorkingDays] = useState(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -67,6 +69,7 @@ export default function DoctorsPage() {
     setBreakStart('13:00');
     setBreakEnd('14:00');
     setSlotDurationMinutes(15);
+    setGoogleCalendarId('');
     setWorkingDays(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY']);
     setUsername('');
     setPassword('');
@@ -104,6 +107,7 @@ export default function DoctorsPage() {
         breakStart: breakStart || null,
         breakEnd: breakEnd || null,
         slotDurationMinutes: parseInt(slotDurationMinutes),
+        googleCalendarId: googleCalendarId.trim(),
         workingDays,
         username,
         password
@@ -144,6 +148,7 @@ export default function DoctorsPage() {
     setBreakStart(doc.breakStart?.substring(0, 5) || '');
     setBreakEnd(doc.breakEnd?.substring(0, 5) || '');
     setSlotDurationMinutes(doc.slotDurationMinutes || 15);
+    setGoogleCalendarId(doc.googleCalendarId || '');
     setWorkingDays(doc.workingDays || []);
     setUsername(doc.username || '');
     setPassword('');
@@ -230,6 +235,12 @@ export default function DoctorsPage() {
                         <BookOpen className={styles.detailIcon} />
                         <span>Slot: {doc.slotDurationMinutes} mins</span>
                       </div>
+                      {doc.googleCalendarId && (
+                        <div className={styles.detailItem}>
+                          <Calendar className={styles.detailIcon} />
+                          <span>{doc.googleCalendarId}</span>
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.scheduleInfo}>
@@ -445,6 +456,23 @@ export default function DoctorsPage() {
                   <option value={60}>60 Minutes</option>
                 </select>
               </div>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label>Google Calendar ID (optional)</label>
+              <div className={styles.inputWrapper}>
+                <Calendar className={styles.fieldIcon} />
+                <input
+                  type="text"
+                  placeholder="e.g. doctor@gmail.com or ...@group.calendar.google.com"
+                  value={googleCalendarId}
+                  onChange={(e) => setGoogleCalendarId(e.target.value)}
+                  disabled={submitting}
+                />
+              </div>
+              <small style={{ opacity: 0.7, fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>
+                Appointments sync to this calendar. Share it with calendar-bot@titan-458108.iam.gserviceaccount.com (Make changes to events).
+              </small>
             </div>
 
             <div className={styles.inputGroup}>
