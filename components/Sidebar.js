@@ -11,7 +11,8 @@ import {
   LogOut, 
   Activity,
   Mic,
-  Users
+  Users,
+  CalendarClock
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
@@ -25,6 +26,7 @@ export default function Sidebar() {
     { name: 'Book Appointment', icon: CalendarPlus, path: '/book' },
     { name: 'Call Recordings', icon: Mic, path: '/recordings' },
     { name: 'Manage Doctors', icon: Users, path: '/doctors', role: 'ADMIN' },
+    { name: 'My Availability', icon: CalendarClock, path: '/availability', role: 'DOCTOR' },
     { name: 'Settings', icon: Settings, path: '/settings' },
   ];
 
